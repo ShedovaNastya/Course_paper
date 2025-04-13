@@ -1,0 +1,5 @@
+[2025-04-13 22:08:40] [SERVER_START] Server 1 started on port 8080
+[2025-04-13 22:09:13] [CLIENT_CONNECT] New client connected
+[2025-04-13 22:38:47] [CLIENT_CONNECT] New client connected
+[2025-04-13 22:38:47] [COMMAND] Received command: MOUSE_KEYS
+[2025-04-13 23:30:06] [CLIENT_CONNECT] New client connected
