@@ -8,10 +8,12 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <csignal>
 
 std::mutex log_mutex;
 const char* SERVER1_FIFO = "/tmp/server1_log.fifo";
 const char* SERVER2_FIFO = "/tmp/server2_log.fifo";
+volatile sig_atomic_t running = 1;
 
 void create_fifo(const char* path) {
     if (mkfifo(path, 0666) == -1 && errno != EEXIST) {
@@ -36,10 +38,10 @@ void log_event(const std::string& server_id, const std::string& event_type, cons
 void handle_fifo(const char* fifo_path, const std::string& server_id) {
     char buffer[1024];
     
-    while (true) {
+    while (running) {
         int fd = open(fifo_path, O_RDONLY);
         if (fd == -1) {
-            std::cerr << "Error opening FIFO: " << strerror(errno) << std::endl;
+            if (running) std::cerr << "Error opening FIFO: " << strerror(errno) << std::endl;
             sleep(1);
             continue;
         }
@@ -58,7 +60,14 @@ void handle_fifo(const char* fifo_path, const std::string& server_id) {
     }
 }
 
+void sig_handler(int) {
+    running = 0;
+}
+
 int main() {
+    std::signal(SIGINT, sig_handler);
+    std::signal(SIGTERM, sig_handler);
+    
     mkdir("logs", 0777);
     create_fifo(SERVER1_FIFO);
     create_fifo(SERVER2_FIFO);
@@ -66,10 +75,12 @@ int main() {
     std::thread server1_thread(handle_fifo, SERVER1_FIFO, "server1");
     std::thread server2_thread(handle_fifo, SERVER2_FIFO, "server2");
 
-    std::cout << "Log server started" << std::endl;
+    std::cout << "Log server started (Ctrl+C to exit)" << std::endl;
     
     server1_thread.join();
     server2_thread.join();
 
+    unlink(SERVER1_FIFO);
+    unlink(SERVER2_FIFO);
     return 0;
 }

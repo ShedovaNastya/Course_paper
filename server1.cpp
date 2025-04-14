@@ -13,7 +13,8 @@
 #include <fstream>
 #include <sstream>
 #include <cstring>
-#include <arpa/inet.h>  // Для inet_pton
+#include <arpa/inet.h> 
+#include <ctime> // Для inet_pton
 
 std::mutex mtx;
 
@@ -98,6 +99,14 @@ size_t get_free_memory() {
     return free_mem;
 }
 
+
+std::string get_current_time() {
+    std::time_t now = std::time(nullptr);
+    char buf[20];
+    std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+    return std::string(buf);
+}
+
 void handle_client(int client_socket) {
     while(true) {
         char buffer[1024] = {0};
@@ -107,42 +116,48 @@ void handle_client(int client_socket) {
 
         std::string command(buffer, bytes_read);
         std::string response;
+        std::string timestamp = "[" + get_current_time() + "] ";
+        
         send_log("CLIENT_CONNECT", "New client connected");
+        
         if (command == "MEMORY") {
             size_t free_mem = get_free_memory();
-            response = "Free memory: " + std::to_string(free_mem) + " bytes\n";
+            response = timestamp + "Free memory: " + std::to_string(free_mem) + " bytes\n";
             send_log("COMMAND", "Received command: " + command);
         }
         else if (command == "MOUSE_KEYS") {
             try {
                 auto mice = detect_mice();
                 if (mice.empty()) {
-                    response = "Mouse devices: 0\n";
+                    response = timestamp + "Mouse devices: 0\n";
                 } else {
-                    response = "Mouse devices: " + std::to_string(mice.size()) + "\n";
+                    response = timestamp + "Mouse devices: " + std::to_string(mice.size()) + "\n";
                     for (const auto& mouse : mice) {
-                        response += mouse.name + ": " + std::to_string(mouse.buttons) + "\n";
+                        response += timestamp + mouse.name + ": " + std::to_string(mouse.buttons) + "\n";
                         send_log("COMMAND", "Received command: " + command);
                     }
                 }
             } 
             catch (const std::exception& e) {
-                response = "Error: " + std::string(e.what()) + "\n";
+                response = timestamp + "Error: " + std::string(e.what()) + "\n";
             }
         }
         else if (command == "EXIT") {
-            response = "Connection closed";
+            response = timestamp + "Connection closed";
+            send_log("EXIT", "Received command: " + response);
             send(client_socket, response.c_str(), response.size(), 0);
             break;
         }
         else {
-            response = "Invalid command\n";
+            response = timestamp + "Invalid command\n";
         }
 
         if(send(client_socket, response.c_str(), response.size(), 0) <= 0) break;
     }
     close(client_socket);
 }
+
+
 
 int main() {
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);

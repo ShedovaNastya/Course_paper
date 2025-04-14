@@ -1,2 +1,76 @@
 [2025-04-13 22:11:33] [CLIENT_CONNECT] New client connected
 [2025-04-13 22:11:33] [COMMAND] Received command: THREAD_COUNT
+[2025-04-14 01:12:38] [CLIENT_CONNECT] New client connected
+[2025-04-14 01:12:38] [COMMAND] Received command: MOVE_WINDOW 500 700
+[2025-04-14 01:18:50] [CLIENT_CONNECT] New client connected
+[2025-04-14 01:18:50] [COMMAND] Received command: THREAD_COUNT
+[2025-04-14 12:01:59] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 12:05:52] [CLIENT_CONNECT] New client connected
+[2025-04-14 12:05:52] [COMMAND] Received command: THREAD_COUNT
+[2025-04-14 12:06:08] [CLIENT_CONNECT] New client connected
+[2025-04-14 12:26:57] [CLIENT_CONNECT] New client connected
+[2025-04-14 12:48:18] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 13:05:16] [SERVER_START] Server 2 initialized
+[2025-04-14 13:47:25] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 14:00:14] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 14:00:17] [SERVER_STOP] Server 2 stopped
+[2025-04-14 14:02:28] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 14:03:40] [CLIENT_CONNECT] New client connected
+[2025-04-14 14:04:07] [CLIENT_CONNECT] New client connected
+[2025-04-14 14:04:07] [COMMAND] Received command: THREAD_COUNT
+[2025-04-14 14:04:57] [SERVER_STOP] Server 2 stopped
+[2025-04-14 14:08:49] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 14:09:57] [CLIENT_CONNECT] New client connected
+[2025-04-14 14:10:49] [CLIENT_CONNECT] New client connected
+[2025-04-14 14:10:49] [COMMAND] Received command: THREAD_COUNT
+[2025-04-14 14:13:53] [SERVER_STOP] Server 2 stopped
+[2025-04-14 14:14:07] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 14:14:31] [CLIENT_CONNECT] New client connected
+[2025-04-14 14:16:52] [SERVER_STOP] Server 2 stopped
+[2025-04-14 14:17:02] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 14:17:26] [CLIENT_CONNECT] New client connected
+[2025-04-14 14:18:13] [CLIENT_CONNECT] New client connected
+[2025-04-14 14:19:42] [SERVER_STOP] Server 2 stopped
+[2025-04-14 14:20:23] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 14:20:45] [CLIENT_CONNECT] New client connected
+[2025-04-14 14:22:08] [CLIENT_CONNECT] New client connected
+[2025-04-14 14:22:28] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:28:32] [SERVER_STOP] Server 2 stopped
+[2025-04-14 16:28:52] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 16:29:45] [CLIENT_CONNECT] New client connectedCOMMAND|Received command: MOVE_WINDOW 300 400
+[2025-04-14 16:30:26] [SERVER_STOP] Server 2 stopped
+[2025-04-14 16:36:37] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 16:37:29] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:37:29] [COMMAND] Received command: THREAD_COUNT
+[2025-04-14 16:38:36] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:38:36] [COMMAND] Received command: THREAD_COUNT
+[2025-04-14 16:39:09] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:45:20] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:45:49] [SERVER_STOP] Server 2 stopped
+[2025-04-14 16:45:51] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 16:45:53] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:46:33] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:47:38] [SERVER_STOP] Server 2 stopped
+[2025-04-14 16:47:47] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 16:48:18] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:49:53] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:49:53] [COMMAND] Received command: THREAD_COUNT
+[2025-04-14 16:52:21] [SERVER_STOP] Server 2 stopped
+[2025-04-14 16:52:33] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 16:53:03] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:54:03] [SERVER_STOP] Server 2 stopped
+[2025-04-14 16:54:11] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 16:54:32] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:57:01] [SERVER_STOP] Server 2 stopped
+[2025-04-14 16:57:09] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 16:57:38] [CLIENT_CONNECT] New client connected
+[2025-04-14 16:57:38] [COMMAND] Received command: [2025-04-14 16:57:38] OK Окно перемещено в 300x400
+[2025-04-14 16:58:47] [SERVER_STOP] Server 2 stopped
+[2025-04-14 16:58:54] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 17:00:28] [CLIENT_CONNECT] New client connected
+[2025-04-14 17:01:45] [SERVER_STOP] Server 2 stopped
+[2025-04-14 17:01:52] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 17:02:17] [CLIENT_CONNECT] New client connected
+[2025-04-14 17:03:04] [SERVER_STOP] Server 2 stopped
+[2025-04-14 17:03:18] [SERVER_START] Server 2 started on port 8081
+[2025-04-14 17:03:49] [CLIENT_CONNECT] New client connected

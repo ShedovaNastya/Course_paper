@@ -16,6 +16,7 @@
 #include <atomic>
 #include <cstring>
 #include <arpa/inet.h> 
+#include <ctime>
 
 std::mutex mtx;
 std::atomic<bool> running{true};
@@ -153,6 +154,16 @@ bool move_window(int x, int y) {
     return true;
 }
 
+
+// Добавить функцию получения времени
+std::string get_current_time() {
+    std::time_t now = std::time(nullptr);
+    char buf[20];
+    std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+    return std::string(buf);
+}
+
+// Модифицированная функция handle_client для сервера 2
 void handle_client(int client_socket) {
     ConnectionCounter counter;
     char buffer[1024];
@@ -164,12 +175,13 @@ void handle_client(int client_socket) {
 
             std::string request(buffer, bytes_read);
             std::string response;
+            std::string timestamp = "[" + get_current_time() + "] ";
 
             send_log("CLIENT_CONNECT", "New client connected");
 
             if (request == "THREAD_COUNT") {
                 int total_threads = count_system_threads();
-                response = "Всего потоков в системе: " + std::to_string(total_threads);
+                response = timestamp + "Всего потоков в системе: " + std::to_string(total_threads);
                 send_log("COMMAND", "Received command: " + request);
             }
             else if (request.rfind("MOVE_WINDOW", 0) == 0) {
@@ -179,27 +191,29 @@ void handle_client(int client_socket) {
                     int x, y;
                     if (iss >> x >> y) {
                         bool success = move_window(x, y);
-                        response = success ? 
+                        response = timestamp + (success ? 
                             "OK Окно перемещено в " + std::to_string(x) + "x" + std::to_string(y) :
-                            "ERROR Ошибка перемещения";
-                        send_log("COMMAND", "Received command: " + request);    
+                            "ERROR Ошибка перемещения");
+                           
                     } else {
-                        response = "ERROR Неверный формат координат";
+                        response = timestamp + "ERROR Неверный формат координат";
                     }
                 } else {
-                    response = "ERROR Неверный формат команды";
+                    response = timestamp + "ERROR Неверный формат команды";
                 }
             }
             else if (request == "EXIT") {
-                response = "Соединение закрыто";
+                response = timestamp + " Соединение закрыто";
+                send_log("EXIT", "Received command: " + request);
                 send(client_socket, response.c_str(), response.size(), 0);
                 break;
             }
             else {
-                response = "ERROR Неизвестная команда";
+                response = timestamp + "ERROR Неизвестная команда";
             }
 
             send(client_socket, response.c_str(), response.size(), 0);
+            send_log("COMMAND", "Received command:"+ response);
         }
     }
     catch(const std::exception& e) {
@@ -214,6 +228,7 @@ int main() {
 
     if (!init_x11_connection()) {
         std::cerr << "Не удалось подключиться к X Server или найти окно терминала" << std::endl;
+        send_log("SERVER_ERROR", "X11 connection failed");
         return 1;
     }
 
@@ -224,6 +239,15 @@ int main() {
     }
 
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_socket < 0) {
+        std::cerr << "Ошибка создания сокета: " << strerror(errno) << std::endl;
+        return 1;
+    }
+
+    // Делаем сокет неблокирующим
+    int flags = fcntl(server_socket, F_GETFL, 0);
+    fcntl(server_socket, F_SETFL, flags | O_NONBLOCK);
+
     sockaddr_in server_addr{};
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(8081);
@@ -234,6 +258,7 @@ int main() {
 
     if (bind(server_socket, (sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
         std::cerr << "Ошибка bind: " << strerror(errno) << std::endl;
+        send_log("SERVER_ERROR", "Bind failed");
         return 1;
     }
 
@@ -245,14 +270,29 @@ int main() {
         sockaddr_in client_addr{};
         socklen_t addr_len = sizeof(client_addr);
         int client_socket = accept(server_socket, (sockaddr*)&client_addr, &addr_len);
-        if (client_socket < 0) continue;
         
-        std::thread([client_socket](){ handle_client(client_socket); }).detach();
+        if (client_socket < 0) {
+            if (errno == EWOULDBLOCK || errno == EAGAIN) {
+                // Ждем 100ms перед следующей проверкой
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                continue;
+            }
+            std::cerr << "Ошибка accept: " << strerror(errno) << std::endl;
+            continue;
+        }
+        
+        std::thread([client_socket](){ 
+            handle_client(client_socket); 
+        }).detach();
     }
 
+    // Корректное завершение
+    send_log("SERVER_STOP", "Server 2 stopped");
+    std::cout << "Сервер 2 остановлен" << std::endl;
+    
     if (display) XCloseDisplay(display);
     close(server_socket);
     close(lock_fd);
-    std::cout << "Сервер 2 остановлен" << std::endl;
+    
     return 0;
 }
